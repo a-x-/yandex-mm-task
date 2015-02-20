@@ -62,11 +62,14 @@ h2{
     width:32px;
     height:32px;
     cursor:pointer;
-    background:url('../images/star_off.png');
+    background:url('../images/spritesheet.png');
+    background-position: -5px -47px;
+
 }
 .rating:not(:checked) > label:hover,
 .rating:not(:checked) > label:hover ~ label{
-    background:url('../images/misc_58.png');
+    background:url('../images/spritesheet.png');
+    background-position: -47px -5px;
 }
 .rating > input:checked ~ label,
 .rating > input:checked + label:hover,
@@ -74,7 +77,8 @@ h2{
 .rating > input:checked ~ label:hover,
 .rating > input:checked ~ label:hover ~ label,
 .rating > label:hover ~ input:checked ~ label{
-    background:url('../images/misc_57.png');
+    background:url('../images/spritesheet.png');
+    background-position: -5px -5px;
 }
 /*For tab 2*/
 .progress-wrap {
