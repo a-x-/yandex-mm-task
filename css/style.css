@@ -76,7 +76,40 @@ h2{
 .rating > label:hover ~ input:checked ~ label{
     background:url('../images/misc_57.png');
 }
-
+/*For tab 2*/
+.progress-wrap {
+    position: relative;
+    width: 212px;
+    box-shadow: inset 0 1px 1px 1px rgba(206, 206, 206, 0.8);
+    border-radius: 6px;
+    background: #fff;
+    height: 14px;
+    overflow: hidden;
+}
+.progress {
+    height: 14px;
+    border-radius: 6px;
+    background: #abff58;
+    background: -moz-linear-gradient(top,  #abff58 0%, #29bf14 41%, #29bf14 60%, #8bda1a 85%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#abff58), color-stop(41%,#29bf14), color-stop(60%,#29bf14), color-stop(85%,#8bda1a));
+    background: -webkit-linear-gradient(top,  #abff58 0%,#29bf14 41%,#29bf14 60%,#8bda1a 85%);
+    background: -o-linear-gradient(top,  #abff58 0%,#29bf14 41%,#29bf14 60%,#8bda1a 85%);
+    background: -ms-linear-gradient(top,  #abff58 0%,#29bf14 41%,#29bf14 60%,#8bda1a 85%);
+    background: linear-gradient(to bottom,  #abff58 0%,#29bf14 41%,#29bf14 60%,#8bda1a 85%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#abff58', endColorstr='#8bda1a',GradientType=0 );
+    -webkit-transition: width 1s linear;-moz-transition: width 1s linear;-ms-transition: width 1s linear;-o-transition: width 1s linear;transition: width 1s linear;
+}
+.progress::after {
+    position: absolute;
+    font-size: 9px;
+    width: 3.8em;
+    height: 40px;
+    left: 50%;
+    margin-left: -10px;
+    top: -9px;
+    display: inline-block;
+    content: attr(style);
+}
 /*For tab 3*/
 .bro,
 .nebro{
@@ -122,6 +155,7 @@ h2{
 .blue{
     color:DodgerBlue;
 }
+/*Style for console*/
 .console{
     width: 80%;
     margin: 10px auto;
