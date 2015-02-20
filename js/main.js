@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    init();
+    tab.init();
     var tabs = $('.nav'),
         input = $('.input');
 
@@ -9,7 +9,7 @@ $(document).ready(function () {
      */
 
     tabs.on('focus', 'li', function (e) {
-        showTabs(e.target);
+        tab.showTabs(e.target);
         e.stopImmediatePropagation();
     });
 
@@ -32,44 +32,54 @@ $(document).ready(function () {
 });
 
 /**
- * Функция init
- * Вызывается при загрузке страницы, для первоночальной установки активной вкладки
- * Если информация в localStorage отсутствует устанавливается значение по умолчанию элемента с атрибутом  tabindex === 1
+ * Модуль tab
+ * содержит публичные методы:
+ *        showTabs
+ *        init
  */
 
-function init() {
-    if (localStorage.getItem('tab')) {
-        showTabs($('li[data-tab=' + localStorage.getItem('tab') + ']')[0]);
+var tab = (function(){
+    return {
+        /**
+         * Функция showTabs
+         * @param target - DOM элемент tab который следует установить active
+         * устанавливает значение выбранной вкладки в localStorage
+         * добавляет класс active к выбранной вкладке и отображает связанное с ней содержимое
+         * Запускает функцию startTime для отслеживания активности пользователя на странице
+         */
+        showTabs: function(target){
+            var el = (target.nodeName === 'LI') ? target : target.parentNode,
+                tab = el.getAttribute('data-tab'),
+                title = el.getAttribute('title'),
+                tab_index = el.getAttribute('tabindex');
+            localStorage.setItem('tab', tab);
+
+            $('.active').removeClass('active');
+            el.className = 'active';
+            $('.tab-content').hide();
+            $('.title').html(title);
+            $('#' + tab).show();
+
+            timer.startTime(tab_index);
+        },
+        /**
+         * Функция init
+         * Вызывается при загрузке страницы, для первоночальной установки активной вкладки
+         * Если информация в localStorage отсутствует устанавливается значение по умолчанию элемента с атрибутом  tabindex === 1
+         */
+        init: function(){
+            if (localStorage.getItem('tab')) {
+                tab.showTabs($('li[data-tab=' + localStorage.getItem('tab') + ']')[0]);
+            }
+            else {
+                tab.showTabs($('li[tabindex=1]')[0]);
+            }
+        }
     }
-    else {
-        showTabs($('li[tabindex=1]')[0]);
-    }
-}
-/**
- * Функция showTabs
- * @param target - DOM элемент tab который следует установить active
- * устанавливает значение выбранной вкладки в localStorage
- * добавляет класс active к выбранной вкладке и отображает связанное с ней содержимое
- * Запускает функцию startTime для отслеживания активности пользователя на странице
- */
-function showTabs(target) {
-    var el = (target.nodeName === 'LI') ? target : target.parentNode,
-        tab = el.getAttribute('data-tab'),
-        title = el.getAttribute('title'),
-        tab_index = el.getAttribute('tabindex');
-    localStorage.setItem('tab', tab);
-
-    $('.active').removeClass('active');
-    el.className = 'active';
-    $('.tab-content').hide();
-    $('.title').html(title);
-    $('#' + tab).show();
-
-    timer.startTime(tab_index);
-}
+}());
 
 /**
- * Функция-конструктор custom_console
+ * Модуль custom_console
  * содержит публичные методы:
  *        checkMethod
  *        findMethodInHistory
@@ -110,7 +120,7 @@ var custom_console = (function () {
     var selectTab = function (tabIndex) {
         if (tabIndex >= 1 && tabIndex <= 3) {
             var el = $('li[tabindex=' + tabIndex + ']')[0];
-            showTabs(el);
+            tab.showTabs(el);
             _publishToConsole('Выбран таб №' + tabIndex + ' ' + el.getAttribute('title'));
         }
         else {
@@ -201,7 +211,7 @@ var custom_console = (function () {
     };
 }());
 /**
- * Функция-конструктор timer
+ * Модуль timer
  * содержит публичные методы:
  *        startTime
  *        getTime
@@ -228,7 +238,6 @@ var timer = (function () {
         };
     return {
         startTime: function (tabIndex) {
-            console.log(statistic);
             if (currentTab) {
                 statistic[currentTab].sec += new Date().getTime() - statistic[currentTab].timestamp;
             }
