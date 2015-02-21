@@ -14,7 +14,7 @@ $(document).ready(function () {
     });
 
     /**
-     * Обработчик события keyup по полю input в консоли
+     * Обработчик события keyup в поле input в консоли
      * @param {Event} e событие keyup
      * Если нажат пробел(e.keyCode === 13) вызывает функцию проверки существования команды в консоли
      * Если происходит нажатие на стрелки вверх/вниз (e.keyCode === 38 || e.keyCode === 40) вызывает функцию поиска по истории команд в консоли
@@ -97,7 +97,7 @@ var tab = (function(){
 
 var custom_console = (function () {
     var history = [], currentElement = -1,
-        method = ['selectTab', 'swapTabs', 'showStat'];
+        method = ['selectTab', 'swapTabs', 'showStat', 'man'];
     /**
      * Функция _publishToConsole
      * @param val - сообщение которое нужно опубликовать в консоли
@@ -161,6 +161,16 @@ var custom_console = (function () {
             'Таб 1: ' + Math.round(one) + ' секунд <br>' +
             'Таб 2: ' + Math.round(two) + ' секунд <br>' +
             'Таб 3: ' + Math.round(three) + ' секунд <br>');
+    };
+    /**
+     * Метод консоли man
+     * help пользователю по консоли
+     */
+    var man = function (){
+        _publishToConsole('' +
+        'selectTab(tabIndex) — выбор таба с индексом tabIndex <br>' +
+        'swapTabs(tabIndex1, tabIndex2) - поменять местами в DOM табы tabIndex1 и tabIndex2 <br>' +
+        'showStat() — показать статистику <br>');
     };
 
     return {
