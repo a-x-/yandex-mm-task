@@ -1,43 +1,9 @@
-$(document).ready(function () {
-    tab.init();
-    var tabs = $('.nav'),
-        input = $('.input');
-
-    /**
-     * Обработчик события focus по tab
-     * @param {Event} e событие focus
-     */
-
-    tabs.on('focus', 'li', function (e) {
-        tab.showTabs(e.target);
-        e.stopImmediatePropagation();
-    });
-
-    /**
-     * Обработчик события keyup в поле input в консоли
-     * @param {Event} e событие keyup
-     * Если нажат пробел(e.keyCode === 13) вызывает функцию проверки существования команды в консоли
-     * Если происходит нажатие на стрелки вверх/вниз (e.keyCode === 38 || e.keyCode === 40) вызывает функцию поиска по истории команд в консоли
-     */
-
-    input.on("keyup", function (e) {
-        if (e.keyCode === 13) {
-            custom_console.checkMethod(input.val());
-        }
-        else if (e.keyCode === 38 || e.keyCode === 40) {
-            custom_console.findMethodInHistory(e.keyCode);
-        }
-    });
-
-});
-
 /**
  * Модуль tab
  * содержит публичные методы:
  *        showTabs
  *        init
  */
-
 var tab = (function () {
     return {
         /**
@@ -77,12 +43,12 @@ var tab = (function () {
         }
     }
 }());
-
 /**
  * Модуль custom_console
  * содержит публичные методы:
  *        checkMethod
- *        findMethodInHistory
+ *        showPrevCommand
+ *        showNextCommand
  * и приватные методы:
  *        _publishToConsole
  *        _addToHistory
@@ -95,7 +61,6 @@ var tab = (function () {
  *         method  - хранит доступные методы нашей консоли
  *  переменная currentElement используется для отслеживания перехода пользователя по истории команд
  */
-
 var custom_console = (function () {
     var history = [], currentElement = -1,
         method = ['selectTab', 'swapTabs', 'showStat', 'man'];
@@ -104,7 +69,7 @@ var custom_console = (function () {
      * @param val - сообщение которое нужно опубликовать в консоли
      */
     var _publishToConsole = function (val) {
-        $('.output').append(val + '<br>');
+        $('.console_output').append(val + '<br>');
     };
     /**
      * Функция _addToHistory
@@ -125,7 +90,7 @@ var custom_console = (function () {
             _publishToConsole('Выбран таб №' + tabIndex + ' ' + el.getAttribute('title'));
         }
         else {
-            _publishToConsole('Не удалось выбрать таб №' + tabIndex + '. Доступны табы с 0 по 3.');
+            _publishToConsole('Не удалось выбрать таб №' + tabIndex + '. Доступны табы с 1 по 3.');
         }
     };
     /**
@@ -144,7 +109,7 @@ var custom_console = (function () {
             _publishToConsole('Поменяли табы №' + tabIndex1 + ' ' + el1.getAttribute('title') + ' и №' + tabIndex2 + ' ' + el2.getAttribute('title') + ' местами');
         }
         else {
-            _publishToConsole('Не удалось выбрать табы. Доступны табы с 0 по 3.');
+            _publishToConsole('Не удалось выбрать табы. Доступны табы с 1 по 3.');
         }
     };
     /**
@@ -173,7 +138,6 @@ var custom_console = (function () {
         'swapTabs(tabIndex1, tabIndex2) - поменять местами в DOM табы tabIndex1 и tabIndex2 <br>' +
         'showStat() — показать статистику <br>');
     };
-
     return {
         /**
          * Функция checkMethod
@@ -181,7 +145,7 @@ var custom_console = (function () {
          * при положительном результате запускает команду
          */
         checkMethod: function (val) {
-            $('.input').val('');
+            $('.console_input').val('');
             currentElement = -1;
             _addToHistory(val);
             if (!!~method.indexOf(val.split('(')[0])) {
@@ -193,30 +157,23 @@ var custom_console = (function () {
             }
         },
         /**
-         * Функция findMethodInHistory
-         * производит обход по истории команд
-         * @code код клавиши (стрелки вверх/вниз)
+         * Функция showPrevCommand
+         * производит обход по истории команд вниз
          */
-        findMethodInHistory: function (code) {
-            if (history.length > 0) {
-                if (code === 38) {
-                    if (currentElement < history.length - 1) {
-                        $('.input').val(history[currentElement + 1]);
-                        currentElement++;
-                    }
-                    else {
-                        return false
-                    }
+        showPrevCommand: function () {
+                if (history.length > 0 && currentElement < history.length - 1) {
+                    $('.console_input').val(history[currentElement + 1]);
+                    currentElement++;
                 }
-                else {
-                    if (currentElement != 0 && currentElement != -1) {
-                        $('.input').val(history[currentElement - 1]);
-                        currentElement--;
-                    }
-                    else {
-                        return false
-                    }
-                }
+        },
+        /**
+         * Функция showNextCommand
+         * производит обход по истории команд вверх
+         */
+        showNextCommand: function () {
+            if (history.length > 0 && currentElement != 0 && currentElement != -1) {
+                $('.console_input').val(history[currentElement - 1]);
+                currentElement--;
             }
         }
     };
@@ -262,3 +219,36 @@ var timer = (function () {
         }
     }
 }());
+
+$(document).ready(function () {
+    tab.init();
+    var tabs = $('.nav'),
+        input = $('.console_input');
+    /**
+     * Обработчик события focus по tab
+     * @param {Event} e событие focus
+     */
+    tabs.on('focus', 'li', function (e) {
+        tab.showTabs(e.target);
+        e.stopImmediatePropagation();
+    });
+    /**
+     * Обработчик события keyup в поле input в консоли
+     * @param {Event} e событие keyup
+     * Если нажат пробел(e.keyCode === 13) вызывает функцию проверки существования команды в консоли
+     * Если происходит нажатие на стрелки вверх/вниз (e.keyCode === 38 || e.keyCode === 40) вызывает функцию поиска по истории команд в консоли
+     */
+    input.on("keyup", function (e) {
+        switch (e.keyCode) {
+            case 13:
+                custom_console.checkMethod(input.val());
+                break;
+            case 38:
+                custom_console.showPrevCommand();
+                break;
+            case 40:
+                custom_console.showNextCommand();
+                break;
+        }
+    });
+});
