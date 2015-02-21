@@ -8,7 +8,7 @@ var tab = (function () {
     return {
         /**
          * Функция showTabs
-         * @param el - DOM элемент tab который следует установить active
+         * @param el - элемент tab который следует установить active
          * устанавливает значение выбранной вкладки в localStorage
          * добавляет класс active к выбранной вкладке и отображает связанное с ней содержимое
          * Запускает функцию startTime для отслеживания активности пользователя на странице
@@ -99,13 +99,13 @@ var custom_console = (function () {
      */
     var swapTabs = function (tabIndex1, tabIndex2) {
         if (tabIndex1 >= 1 && tabIndex1 <= 3 && tabIndex2 >= 1 && tabIndex2 <= 3) {
-            var el1 = $('li[tabindex=' + tabIndex1 + ']')[0],
-                el2 = $('li[tabindex=' + tabIndex2 + ']')[0],
-                parent = $('.nav-tabs')[0],
-                dupNode = el2.cloneNode(true);
-            parent.insertBefore(dupNode, el1);
-            el2.remove();
-            _publishToConsole('Поменяли табы №' + tabIndex1 + ' ' + el1.getAttribute('title') + ' и №' + tabIndex2 + ' ' + el2.getAttribute('title') + ' местами');
+            var el1 = $('li[tabindex=' + tabIndex1 + ']'),
+                el2 = $('li[tabindex=' + tabIndex2 + ']');
+
+            el1.replaceWith(el2.clone());
+            el2.replaceWith(el1);
+
+            _publishToConsole('Поменяли табы №' + tabIndex1 + ' ' + el1[0].getAttribute('title') + ' и №' + tabIndex2 + ' ' + el2[0].getAttribute('title') + ' местами');
         }
         else {
             _publishToConsole('Не удалось выбрать табы. Доступны табы с 1 по 3.');
