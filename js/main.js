@@ -38,7 +38,7 @@ $(document).ready(function () {
  *        init
  */
 
-var tab = (function(){
+var tab = (function () {
     return {
         /**
          * Функция showTabs
@@ -47,7 +47,7 @@ var tab = (function(){
          * добавляет класс active к выбранной вкладке и отображает связанное с ней содержимое
          * Запускает функцию startTime для отслеживания активности пользователя на странице
          */
-        showTabs: function(target){
+        showTabs: function (target) {
             var el = (target.nodeName === 'LI') ? target : target.parentNode,
                 tab = el.getAttribute('data-tab'),
                 title = el.getAttribute('title'),
@@ -67,7 +67,7 @@ var tab = (function(){
          * Вызывается при загрузке страницы, для первоночальной установки активной вкладки
          * Если информация в localStorage отсутствует устанавливается значение по умолчанию элемента с атрибутом  tabindex === 1
          */
-        init: function(){
+        init: function () {
             if (localStorage.getItem('tab')) {
                 tab.showTabs($('li[data-tab=' + localStorage.getItem('tab') + ']')[0]);
             }
@@ -90,6 +90,7 @@ var tab = (function(){
  *        selectTab
  *        selectTab
  *        showStat
+ *        man
  *  массив history - хранит в историю введенных пользователем команд консоли
  *         method  - хранит доступные методы нашей консоли
  *  переменная currentElement используется для отслеживания перехода пользователя по истории команд
@@ -157,16 +158,16 @@ var custom_console = (function () {
             main_time = one + two + three;
 
         _publishToConsole('Общее время работы со страницей: ' + Math.round(main_time) + '<br>' +
-            'Детализация времени просмотра табов:<br>' +
-            'Таб 1: ' + Math.round(one) + ' секунд <br>' +
-            'Таб 2: ' + Math.round(two) + ' секунд <br>' +
-            'Таб 3: ' + Math.round(three) + ' секунд <br>');
+        'Детализация времени просмотра табов:<br>' +
+        'Таб 1: ' + Math.round(one) + ' секунд <br>' +
+        'Таб 2: ' + Math.round(two) + ' секунд <br>' +
+        'Таб 3: ' + Math.round(three) + ' секунд <br>');
     };
     /**
      * Метод консоли man
      * help пользователю по консоли
      */
-    var man = function (){
+    var man = function () {
         _publishToConsole('' +
         'selectTab(tabIndex) — выбор таба с индексом tabIndex <br>' +
         'swapTabs(tabIndex1, tabIndex2) - поменять местами в DOM табы tabIndex1 и tabIndex2 <br>' +
