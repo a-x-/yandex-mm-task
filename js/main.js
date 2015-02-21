@@ -8,14 +8,13 @@ var tab = (function () {
     return {
         /**
          * Функция showTabs
-         * @param target - DOM элемент tab который следует установить active
+         * @param el - DOM элемент tab который следует установить active
          * устанавливает значение выбранной вкладки в localStorage
          * добавляет класс active к выбранной вкладке и отображает связанное с ней содержимое
          * Запускает функцию startTime для отслеживания активности пользователя на странице
          */
-        showTabs: function (target) {
-            var el = (target.nodeName === 'LI') ? target : target.parentNode,
-                tab = el.getAttribute('data-tab'),
+        showTabs: function (el) {
+            var tab = el.getAttribute('data-tab'),
                 title = el.getAttribute('title'),
                 tab_index = el.getAttribute('tabindex');
             localStorage.setItem('tab', tab);
@@ -62,12 +61,11 @@ var tab = (function () {
  *  переменная currentElement используется для отслеживания перехода пользователя по истории команд
  */
 var custom_console = (function () {
-    var history = [], currentElement = -1,
+    var history = [], currentElement,
         method = ['selectTab', 'swapTabs', 'showStat', 'man'];
     /**
      * Функция _publishToConsole
      * @param val - сообщение которое нужно опубликовать в консоли
-     *
      */
     var _publishToConsole = function (val) {
         $('.console_output').append(val + '<br>');
@@ -117,17 +115,16 @@ var custom_console = (function () {
      * Метод консоли showStat
      */
     var showStat = function () {
-        var stat = timer.getTime(),
-            one = stat[1] / 1000,
-            two = stat[2] / 1000,
-            three = stat[3] / 1000,
-            main_time = one + two + three;
+        var stats = timer.getTime(),
+            total_time = stats.reduce(function(a,b){ return a+b });
 
-        _publishToConsole('Общее время работы со страницей: ' + Math.round(main_time) + '<br>' +
-        'Детализация времени просмотра табов:<br>' +
-        'Таб 1: ' + Math.round(one) + ' секунд <br>' +
-        'Таб 2: ' + Math.round(two) + ' секунд <br>' +
-        'Таб 3: ' + Math.round(three) + ' секунд <br>');
+        _publishToConsole('Общее время работы со страницей: ' + Math.round(total_time/1000) + '<br>' +
+            'Детализация времени просмотра табов:<br>' +
+
+            stats.map(function(stat, i){
+                return 'Таб ' + i + ': ' + Math.round(stat/1000) + ' секунд';
+            }).join('<br>')
+        );
     };
     /**
      * Метод консоли man
@@ -144,12 +141,17 @@ var custom_console = (function () {
          * Функция checkMethod
          * проверяет "валидность" введенной пользователем команды
          * при положительном результате запускает команду
+         * method_name - текст перед открывающейся скобкой
          */
         checkMethod: function (val) {
+            var method_name;
             $('.console_input').val('');
             currentElement = -1;
             _addToHistory(val);
-            if (!!~method.indexOf(val.split('(')[0])) {
+
+            method_name = val.slice(0, val.indexOf('(')).trim();
+
+            if (~method.indexOf(method_name)) {
                 _publishToConsole(' /> ' + val);
                 eval(val);
             }
@@ -186,7 +188,7 @@ var custom_console = (function () {
  *        getTime
  *  переменная currentTab хранит активную вкладку
  *             prevTimestamp - время, когда был кликнут предыдущий там
- *  массив tabsTime содежит время в мс пo табам от 1до 3
+ *  массив tabsTime содежит время в мс пo табам от 1 до 3
  */
 var timer = (function () {
     var currentTab,
