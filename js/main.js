@@ -48,11 +48,11 @@ var tab = (function () {
  * содержит публичные методы:
  *        checkMethod
  *        showPrevCommand
- *        showNextCommand
+ *        showNextCommandA
  * и приватные методы:
  *        _publishToConsole
  *        _addToHistory
- * так же включаетв  себя методы обработки команд консоли:
+ * так же включает в себя методы обработки команд консоли:
  *        selectTab
  *        selectTab
  *        showStat
@@ -67,6 +67,7 @@ var custom_console = (function () {
     /**
      * Функция _publishToConsole
      * @param val - сообщение которое нужно опубликовать в консоли
+     *
      */
     var _publishToConsole = function (val) {
         $('.console_output').append(val + '<br>');
@@ -117,9 +118,9 @@ var custom_console = (function () {
      */
     var showStat = function () {
         var stat = timer.getTime(),
-            one = stat[1].sec / 1000,
-            two = stat[2].sec / 1000,
-            three = stat[3].sec / 1000,
+            one = stat[1] / 1000,
+            two = stat[2] / 1000,
+            three = stat[3] / 1000,
             main_time = one + two + three;
 
         _publishToConsole('Общее время работы со страницей: ' + Math.round(main_time) + '<br>' +
@@ -161,7 +162,7 @@ var custom_console = (function () {
          * производит обход по истории команд вниз
          */
         showPrevCommand: function () {
-                if (history.length > 0 && currentElement < history.length - 1) {
+                if (currentElement < history.length - 1) {
                     $('.console_input').val(history[currentElement + 1]);
                     currentElement++;
                 }
@@ -171,7 +172,7 @@ var custom_console = (function () {
          * производит обход по истории команд вверх
          */
         showNextCommand: function () {
-            if (history.length > 0 && currentElement != 0 && currentElement != -1) {
+            if (history.length > 0 && currentElement != 0) {
                 $('.console_input').val(history[currentElement - 1]);
                 currentElement--;
             }
@@ -184,42 +185,34 @@ var custom_console = (function () {
  *        startTime
  *        getTime
  *  переменная currentTab хранит активную вкладку
- *  объект statistic - содержит 3 свойства в котором хранится информация по каждой вкладке
- *  timestamp - время в милисекундах когда вкладка стала активной
- *  sec - количество секунд который пользователь провел на текущей вкладке
+ *             prevTimestamp - время, когда был кликнут предыдущий там
+ *  массив tabsTime содежит время в мс пo табам от 1до 3
  */
 var timer = (function () {
     var currentTab,
-        statistic = {
-            1: {
-                timestamp: null,
-                sec: null
-            },
-            2: {
-                timestamp: null,
-                sec: null
-            },
-            3: {
-                timestamp: null,
-                sec: null
-            }
-        };
+        prevTimestamp,
+        tabsTime = [
+            , // 0
+            0,
+            0,
+            0
+        ];
+
     return {
         startTime: function (tabIndex) {
             if (currentTab) {
-                statistic[currentTab].sec += new Date().getTime() - statistic[currentTab].timestamp;
+                tabsTime[currentTab] += new Date().getTime() - prevTimestamp;
             }
             currentTab = tabIndex;
-            statistic[tabIndex].timestamp = new Date().getTime();
+            prevTimestamp = new Date().getTime();
         },
         getTime: function () {
-            statistic[currentTab].sec += new Date().getTime() - statistic[currentTab].timestamp;
-            statistic[currentTab].timestamp = new Date().getTime();
-            return statistic;
+            tabsTime[currentTab] += new Date().getTime() - prevTimestamp;
+            prevTimestamp = new Date().getTime();
+            return tabsTime;
         }
     }
 }());
-
 $(document).ready(function () {
     tab.init();
     var tabs = $('.nav'),
