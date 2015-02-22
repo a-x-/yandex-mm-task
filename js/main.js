@@ -215,6 +215,7 @@ var timer = (function () {
         }
     }
 }());
+
 $(document).ready(function () {
     tab.init();
     var tabs = $('.nav'),
@@ -225,7 +226,6 @@ $(document).ready(function () {
      */
     tabs.on('focus', 'li', function (e) {
         tab.showTabs(e.target);
-        e.stopImmediatePropagation();
     });
     /**
      * Обработчик события keyup в поле input в консоли
